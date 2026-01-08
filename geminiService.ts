@@ -3,8 +3,20 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { CommandAction, UserSettings } from "./config";
 
 export const generateSnippet = async (prompt: string, settings: UserSettings): Promise<Partial<CommandAction>> => {
+  const apiKey = process.env.API_KEY;
+
+  if (!apiKey || apiKey === 'undefined' || apiKey === '') {
+    return {
+      name: "Config Error",
+      content: "Missing API_KEY in Vercel Environment Variables.",
+      category: 'custom',
+      icon: '🚫',
+      description: 'Please set the API_KEY variable in your hosting provider dashboard.'
+    };
+  }
+
   // Always initialize inside the call to ensure fresh API Key access in hosted environments
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey });
   const model = 'gemini-3-pro-preview';
   
   const systemInstruction = `
@@ -48,7 +60,7 @@ export const generateSnippet = async (prompt: string, settings: UserSettings): P
     console.error("Gemini Generation Error:", err);
     return {
       name: "AI Error",
-      content: "Could not generate snippet. Check your API connection.",
+      content: "Could not generate snippet. Check your API connection and key limits.",
       category: 'custom',
       icon: '⚠️'
     };
