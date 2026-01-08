@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { CommandAction, UserSettings, INITIAL_COMMANDS, DEFAULT_SETTINGS } from './config';
 import CommandButton from './CommandButton';
